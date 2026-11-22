@@ -1,0 +1,17 @@
+target/
+frontend/node_modules/
+scripts/node_modules/
+frontend/.next/
+frontend/out/
+frontend/tsconfig.tsbuildinfo
+.tools/
+.local/
+*.log
+hs_err_pid*
+replay_pid*
+.DS_Store
+.idea/
+.vscode/
+*.iml
+.env
+.env.local

@@ -1,0 +1,42 @@
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: never
+    include-binding-errors: never
+
+spring:
+  application:
+    name: mesa-de-pedidos
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/liverpool_pedidos}
+      auto-index-creation: true
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+liverpool:
+  datos-prueba: true
+
+logging:
+  level:
+    root: INFO
+    mx.com.liverpool: INFO

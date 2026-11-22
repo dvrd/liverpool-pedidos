@@ -1,0 +1,52 @@
+services:
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: liverpool
+      MONGO_INITDB_ROOT_PASSWORD: liverpool_pedidos
+      MONGO_INITDB_DATABASE: liverpool_pedidos
+    volumes:
+      - liverpool_mongo:/data/db
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--username",
+          "liverpool",
+          "--password",
+          "liverpool_pedidos",
+          "--authenticationDatabase",
+          "admin",
+          "--quiet",
+          "--eval",
+          "db.adminCommand('ping')",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  api:
+    build: ./backend
+    environment:
+      MONGODB_URI: mongodb://liverpool:liverpool_pedidos@mongo:27017/liverpool_pedidos?authSource=admin
+    ports:
+      - "8080:8080"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    environment:
+      API_INTERNA_URL: http://api:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  liverpool_mongo:
