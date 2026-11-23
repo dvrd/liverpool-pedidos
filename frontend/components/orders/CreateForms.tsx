@@ -51,7 +51,7 @@ export function CreateCustomerForm({
 
   return (
     <form className="form-panel" data-testid="customer-form" onSubmit={submit}>
-      <h2>Nuevo cliente</h2>
+      <h2 id="customer-dialog-title">Nuevo cliente</h2>
       <div className="form-grid">
         <Field id="firstName" label="Nombre" error={errors.firstName}>
           <input id="firstName" value={firstName} onChange={(event) => setFirstName(event.target.value)} />
@@ -143,7 +143,7 @@ export function CreateOrderForm({
 
   return (
     <form className="form-panel" data-testid="order-form" onSubmit={submit}>
-      <h2>Registrar pedido</h2>
+      <h2 id="order-dialog-title">Registrar pedido</h2>
       {customersFailed ? <p className="failure" role="alert">{CUSTOMERS_FAILED_MESSAGE}</p> : null}
       {!customersFailed && customers.length === 0 ? <p className="popover-note">Primero registra un cliente.</p> : null}
       <div className="form-grid">

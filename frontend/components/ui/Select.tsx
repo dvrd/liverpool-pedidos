@@ -3,6 +3,7 @@
 import { fold } from "@/lib/text";
 import type { OrderStatus } from "@/lib/types";
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 export type SelectOption = {
   value: string;
@@ -54,11 +55,28 @@ export function Select({
     const menu = menuRef.current;
     if (!root || !menu) return;
     const rect = root.getBoundingClientRect();
-    const below = window.innerHeight - rect.bottom - 12;
-    const above = rect.top - 12;
-    const opensAbove = below < 200 && above > below;
+    const gap = 6;
+    const edge = 12;
+    const below = window.innerHeight - rect.bottom - gap - edge;
+    const above = rect.top - gap - edge;
+    const needed = menu.scrollHeight + 2;
+    const opensAbove = below < needed && above > below;
     menu.dataset.side = opensAbove ? "above" : "below";
-    menu.style.maxHeight = `${Math.max(120, Math.min(320, opensAbove ? above : below))}px`;
+    menu.style.maxHeight = `${Math.max(0, Math.min(320, opensAbove ? above : below))}px`;
+    const dialog = root.closest("dialog");
+    if (!dialog) return;
+    const origin = dialog.getBoundingClientRect();
+    menu.style.position = "absolute";
+    menu.style.left = `${rect.left - origin.left}px`;
+    menu.style.width = `${rect.width}px`;
+    menu.style.right = "auto";
+    if (opensAbove) {
+      menu.style.top = "auto";
+      menu.style.bottom = `${origin.bottom - rect.top + 6}px`;
+    } else {
+      menu.style.top = `${rect.bottom - origin.top + 6}px`;
+      menu.style.bottom = "auto";
+    }
   }
 
   function openMenu() {
@@ -79,7 +97,8 @@ export function Select({
   useEffect(() => {
     if (!open) return;
     function close(event: MouseEvent) {
-      if (!box.current?.contains(event.target as Node)) setOpen(false);
+      const target = event.target as Node;
+      if (!box.current?.contains(target) && !menuRef.current?.contains(target)) setOpen(false);
     }
     function follow() {
       measure();
@@ -119,6 +138,33 @@ export function Select({
     setActive(index);
     setOpen(true);
   }
+
+  const menu = open ? (
+    <div ref={menuRef} id={listId} className="select-menu" role="listbox">
+      {options.map((option, index) => (
+        <button
+          key={option.value}
+          type="button"
+          role="option"
+          id={`${listId}-option-${index}`}
+          aria-selected={option.value === value}
+          data-status={option.status}
+          className={index === active ? "menu-option active" : "menu-option"}
+          tabIndex={-1}
+          onMouseEnter={() => setActive(index)}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => choose(option)}
+        >
+          {option.status ? <span className="swatch" aria-hidden="true" /> : null}
+          <span className="menu-text">
+            <span className="menu-label">{option.label}</span>
+            {option.detail ? <span className="menu-detail">{option.detail}</span> : null}
+          </span>
+        </button>
+      ))}
+    </div>
+  ) : null;
+  const dialog = box.current?.closest("dialog");
 
   return (
     <div className="select" ref={box}>
@@ -161,6 +207,9 @@ export function Select({
             if (!open) openMenu();
             else if (options[active]) choose(options[active]);
           } else if (event.key === "Escape") {
+            if (!open) return;
+            event.preventDefault();
+            event.stopPropagation();
             setOpen(false);
           } else if (event.key === "Tab") {
             setOpen(false);
@@ -175,31 +224,7 @@ export function Select({
         </span>
         <span className="select-arrow" aria-hidden="true" />
       </button>
-      {open ? (
-        <div ref={menuRef} id={listId} className="select-menu" role="listbox">
-          {options.map((option, index) => (
-            <button
-              key={option.value}
-              type="button"
-              role="option"
-              id={`${listId}-option-${index}`}
-              aria-selected={option.value === value}
-              data-status={option.status}
-              className={index === active ? "menu-option active" : "menu-option"}
-              tabIndex={-1}
-              onMouseEnter={() => setActive(index)}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => choose(option)}
-            >
-              {option.status ? <span className="swatch" aria-hidden="true" /> : null}
-              <span className="menu-text">
-                <span className="menu-label">{option.label}</span>
-                {option.detail ? <span className="menu-detail">{option.detail}</span> : null}
-              </span>
-            </button>
-          ))}
-        </div>
-      ) : null}
+      {dialog && menu ? createPortal(menu, dialog) : menu}
     </div>
   );
 }

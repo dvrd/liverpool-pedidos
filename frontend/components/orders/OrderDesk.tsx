@@ -3,6 +3,7 @@
 import { CreateCustomerForm, CreateOrderForm } from "@/components/orders/CreateForms";
 import { OrderSearch } from "@/components/orders/OrderSearch";
 import { Button } from "@/components/ui/Button";
+import { Modal } from "@/components/ui/Modal";
 import { StatusMark } from "@/components/ui/StatusMark";
 import { isAbort, listCustomers, listOrders } from "@/lib/api";
 import { deskHref } from "@/lib/deskQuery";
@@ -153,26 +154,29 @@ export function OrderDesk() {
         </p>
       ) : null}
 
-      {panel === "customer" ? (
-        <CreateCustomerForm
-          onCancel={() => setPanel(null)}
-          onCreated={(name) => {
-            setPanel(null);
-            setNote(`Cliente ${name} registrado.`);
-          }}
-        />
-      ) : null}
-      {panel === "order" ? (
-        <CreateOrderForm
-          customers={customers}
-          customersFailed={customersFailed}
-          onCancel={() => setPanel(null)}
-          onCreated={(orderNumber) => {
-            setPanel(null);
-            setNote(`Pedido ${orderNumber} registrado.`);
-            void load(0);
-          }}
-        />
+      {panel ? (
+        <Modal labelId={panel === "customer" ? "customer-dialog-title" : "order-dialog-title"} onClose={() => setPanel(null)}>
+          {panel === "customer" ? (
+            <CreateCustomerForm
+              onCancel={() => setPanel(null)}
+              onCreated={(name) => {
+                setPanel(null);
+                setNote(`Cliente ${name} registrado.`);
+              }}
+            />
+          ) : (
+            <CreateOrderForm
+              customers={customers}
+              customersFailed={customersFailed}
+              onCancel={() => setPanel(null)}
+              onCreated={(orderNumber) => {
+                setPanel(null);
+                setNote(`Pedido ${orderNumber} registrado.`);
+                void load(0);
+              }}
+            />
+          )}
+        </Modal>
       ) : null}
 
       <section className="list" aria-busy={loading} data-testid="list">
