@@ -4,8 +4,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const evidenceDir = path.join(root, "docs", "evidencias");
-const deskUrl = process.env.DESK_URL || process.env.MESA_URL || "http://127.0.0.1:3000";
+const evidenceDir = path.join(root, "docs", "evidence");
+const deskUrl = process.env.DESK_URL || "http://127.0.0.1:3000";
 const api = process.env.API_URL || "http://127.0.0.1:8080";
 const emptyMessage = "No se tienen resultados que coincidan con los criterios de búsqueda.";
 
@@ -25,12 +25,12 @@ async function shot(name) {
 }
 
 try {
-  await page.goto(`file://${path.join(root, "docs", "recorrido.html")}`);
+  await page.goto(`file://${path.join(root, "docs", "walkthrough.html")}`);
   for (const [id, file] of [
-    ["#problema", "01-problema.png"],
-    ["#arquitectura", "02-arquitectura.png"],
-    ["#decisiones", "03-decisiones.png"],
-    ["#pantallas", "04-pantallas.png"],
+    ["#problem", "01-problem.png"],
+    ["#architecture", "02-architecture.png"],
+    ["#decisions", "03-decisions.png"],
+    ["#screens", "04-screens.png"],
   ]) {
     await page.locator(id).scrollIntoViewIfNeeded();
     await page.waitForTimeout(1400);
@@ -45,7 +45,7 @@ try {
   await page.goto(deskUrl);
   await page.getByText("14 pedidos").waitFor();
   await page.waitForTimeout(800);
-  await shot("06-lista.png");
+  await shot("06-list.png");
 
   const search = page.getByTestId("search");
   await search.click();
@@ -59,7 +59,7 @@ try {
   await page.getByTestId("order-LIV-000002").waitFor();
   await page.getByTestId("order-LIV-000013").waitFor();
   await page.waitForTimeout(700);
-  await shot("08-filtro.png");
+  await shot("08-filter.png");
 
   await page.getByRole("button", { name: "Limpiar" }).click();
   await page.getByText("14 pedidos").waitFor();
@@ -69,12 +69,12 @@ try {
   const message = await page.getByTestId("no-results").innerText();
   if (message.trim() !== emptyMessage) throw new Error(`Unexpected message: ${message}`);
   await page.waitForTimeout(700);
-  await shot("09-sin-resultados.png");
+  await shot("09-no-results.png");
   await search.press("Enter");
   await page.getByTestId("empty-list").waitFor();
   const emptyList = await page.getByTestId("empty-list").innerText();
   if (!emptyList.includes(emptyMessage)) throw new Error("The list does not show the empty search sentence");
-  await shot("10-lista-vacia.png");
+  await shot("10-empty-list.png");
 
   await page.getByRole("button", { name: "Limpiar" }).click();
   await page.getByText("14 pedidos").waitFor();
@@ -87,7 +87,7 @@ try {
   await page.getByText("Av. Presidente Masaryk 111").waitFor();
   await page.getByText("LP-MOD-10442").waitFor();
   await page.waitForTimeout(800);
-  await page.screenshot({ path: path.join(evidenceDir, "11-detalle.png"), fullPage: true });
+  await page.screenshot({ path: path.join(evidenceDir, "11-detail.png"), fullPage: true });
 
   await page.getByRole("link", { name: "Volver a la mesa" }).click();
   await page.getByText("14 pedidos").waitFor();
@@ -103,7 +103,7 @@ try {
   const orderNumber = notice.match(/LIV-\d+/)?.[0];
   if (!orderNumber) throw new Error(`Created order number was not readable: ${notice}`);
   await page.waitForTimeout(600);
-  await shot("12-creado.png");
+  await shot("12-created.png");
   await page.locator("a.stretched", { hasText: orderNumber }).click();
   await page.getByTestId("detail-number").waitFor();
   await page.getByTestId("status").click();
@@ -112,24 +112,24 @@ try {
   await page.getByText("Estatus actualizado.").waitFor();
   await page.getByText("Confirmado").first().waitFor();
   await page.waitForTimeout(700);
-  await shot("13-estatus.png");
+  await shot("13-status.png");
 
   await page.getByTestId("delete").click();
   await page.getByTestId("confirm-delete").click();
   await page.getByText(`Pedido ${orderNumber} eliminado`).waitFor();
   await page.getByText("14 pedidos").waitFor();
-  await shot("14-eliminado.png");
+  await shot("14-deleted.png");
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(deskUrl);
   await page.getByText("14 pedidos").waitFor();
   await page.locator("a.card", { hasText: "LIV-000014" }).waitFor();
   await page.waitForTimeout(600);
-  await page.screenshot({ path: path.join(evidenceDir, "15-movil-lista.png") });
+  await page.screenshot({ path: path.join(evidenceDir, "15-mobile-list.png") });
   await page.locator("a.card", { hasText: "LIV-000014" }).click();
   await page.getByTestId("block-customer").waitFor();
   await page.waitForTimeout(500);
-  await page.screenshot({ path: path.join(evidenceDir, "16-movil-detalle.png"), fullPage: true });
+  await page.screenshot({ path: path.join(evidenceDir, "16-mobile-detail.png"), fullPage: true });
 
   console.log(`Demo ok. Temporary order ${orderNumber} was created and deleted.`);
 } finally {

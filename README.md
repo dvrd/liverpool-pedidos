@@ -10,7 +10,7 @@ Repositorio: <https://github.com/dvrd/liverpool-pedidos>
 - Mesa en Next.js: lista con typeahead y ficha del pedido.
 - Contrato publicado con springdoc (Swagger UI y OpenAPI).
 
-El diseño de las capas, el folio y la búsqueda está en [docs/diseno.md](docs/diseno.md).
+El diseño de las capas, el folio y la búsqueda está en [docs/design.md](docs/design.md).
 
 ## Requisitos
 
@@ -128,7 +128,7 @@ Para probar el typeahead: `jose` encuentra a José Luis aunque se escriba sin ac
 
 ## API
 
-La referencia navegable es Swagger UI en `/swagger-ui.html`. El JSON OpenAPI está en `/v3/api-docs`. Hay una colección corta en [docs/ejemplos.http](docs/ejemplos.http).
+La referencia navegable es Swagger UI en `/swagger-ui.html`. El JSON OpenAPI está en `/v3/api-docs`. Hay una colección corta en [docs/examples.http](docs/examples.http).
 
 ```bash
 curl -s http://localhost:8080/api/v1/orders/suggestions?term=jose
@@ -162,16 +162,16 @@ La mesa está en `/`. La ficha está en `/orders/{id}`. En pantallas angostas la
 
 ## Evidencias
 
-El relato, desde el problema hasta las dos pantallas, está en [docs/recorrido.html](docs/recorrido.html). El video y las capturas de ese mismo flujo están en [docs/evidencias](docs/evidencias):
+El relato, desde el problema hasta las dos pantallas, está en [docs/walkthrough.html](docs/walkthrough.html). El video y las capturas de ese mismo flujo están en [docs/evidence](docs/evidence):
 
 | Archivo | Qué muestra |
 | --- | --- |
 | `demo.webm` | Diseño, Swagger, lista, typeahead, filtro, búsqueda sin coincidencias, ficha, alta, cambio de estatus, baja y las dos pantallas en un teléfono |
 | `07-typeahead.png` | Opciones mientras se escribe |
-| `08-filtro.png` | Lista filtrada al elegir una opción |
-| `09-sin-resultados.png` | Aviso cuando ninguna opción coincide |
-| `11-detalle.png` | Ficha del pedido |
-| `15-movil-lista.png` y `16-movil-detalle.png` | Las mismas pantallas en un marco angosto |
+| `08-filter.png` | Lista filtrada al elegir una opción |
+| `09-no-results.png` | Aviso cuando ninguna opción coincide |
+| `11-detail.png` | Ficha del pedido |
+| `15-mobile-list.png` y `16-mobile-detail.png` | Las mismas pantallas en un marco angosto |
 
 El contrato exportado del servicio está en [docs/openapi.json](docs/openapi.json). En marcha también se consulta en `/v3/api-docs` y en Swagger UI.
 
