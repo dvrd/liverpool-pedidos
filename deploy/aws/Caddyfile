@@ -7,6 +7,6 @@ http://liverpool.dvrd.io {
 }
 
 https://liverpool.dvrd.io {
-	tls internal
+	tls /etc/caddy/certs/origin.crt /etc/caddy/certs/origin.key
 	reverse_proxy web:3000
 }
