@@ -4,30 +4,30 @@
 @host = http://localhost:8080
 
 ### Salud
-GET {{host}}/api/v1/salud
+GET {{host}}/api/v1/health
 
 ### Clientes
-GET {{host}}/api/v1/usuarios
+GET {{host}}/api/v1/customers
 
 ### Alta de cliente
-POST {{host}}/api/v1/usuarios
+POST {{host}}/api/v1/customers
 Content-Type: application/json
 
 {
-  "nombre": "Paula",
-  "apellidoPaterno": "Ibarra",
-  "apellidoMaterno": "Nava",
-  "correoElectronico": "paula.ibarra@correo.com"
+  "firstName": "Paula",
+  "paternalLastName": "Ibarra",
+  "maternalLastName": "Nava",
+  "email": "paula.ibarra@correo.com"
 }
 
 ### Pedidos
-GET {{host}}/api/v1/pedidos?tamano=20
+GET {{host}}/api/v1/orders?size=20
 
 ### Typeahead
-GET {{host}}/api/v1/pedidos/sugerencias?termino=jose
+GET {{host}}/api/v1/orders/suggestions?term=jose
 
 ### Sin coincidencias
-GET {{host}}/api/v1/pedidos/sugerencias?termino=zzzz
+GET {{host}}/api/v1/orders/suggestions?term=zzzz
 
 ### Filtro
-GET {{host}}/api/v1/pedidos?termino=LP-ELC
+GET {{host}}/api/v1/orders?term=LP-ELC

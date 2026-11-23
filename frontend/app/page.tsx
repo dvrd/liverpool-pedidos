@@ -1,10 +1,10 @@
-import { MesaPedidos } from "@/components/pedidos/MesaPedidos";
+import { OrderDesk } from "@/components/orders/OrderDesk";
 import { Suspense } from "react";
 
 export default function Page() {
   return (
-    <Suspense fallback={<p className="estado">Cargando la mesa…</p>}>
-      <MesaPedidos />
+    <Suspense fallback={<p className="state">Cargando la mesa…</p>}>
+      <OrderDesk />
     </Suspense>
   );
 }

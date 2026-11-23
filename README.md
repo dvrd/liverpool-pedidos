@@ -77,13 +77,13 @@ npm install
 npm run dev
 ```
 
-Abre <http://localhost:3000>. El typeahead y la lista pasan por el mismo origen: Next reenvía `/api` a `http://127.0.0.1:8080`. Para apuntar a otro servicio, define `API_INTERNA_URL`.
+Abre <http://localhost:3000>. El typeahead y la lista pasan por el mismo origen: Next reenvía `/api` a `http://127.0.0.1:8080`. Para apuntar a otro servicio, define `INTERNAL_API_URL`.
 
-En macOS, `scripts/levantar-local.sh` hace los tres pasos si el binario está en `.tools/mongodb` o si el puerto 27017 ya está ocupado por MongoDB. `scripts/detener-local.sh` los baja.
+En macOS, `scripts/start-local.sh` hace los tres pasos si el binario está en `.tools/mongodb` o si el puerto 27017 ya está ocupado por MongoDB. `scripts/stop-local.sh` los baja.
 
 ## Datos de prueba
 
-Se insertan solo cuando la colección `usuarios` está vacía. Para repetir la carga, vacía la base y reinicia el API.
+Se insertan solo cuando la colección `customers` está vacía. Para repetir la carga, vacía la base y reinicia el API.
 
 Con el `mongod` local de este repositorio basta borrar `.local/mongo` con el proceso detenido. Con Docker:
 
@@ -131,19 +131,19 @@ Para probar el typeahead: `jose` encuentra a José Luis aunque se escriba sin ac
 La referencia navegable es Swagger UI en `/swagger-ui.html`. El JSON OpenAPI está en `/v3/api-docs`. Hay una colección corta en [docs/ejemplos.http](docs/ejemplos.http).
 
 ```bash
-curl -s http://localhost:8080/api/v1/pedidos/sugerencias?termino=jose
-curl -s http://localhost:8080/api/v1/pedidos?termino=LP-ELC
+curl -s http://localhost:8080/api/v1/orders/suggestions?term=jose
+curl -s http://localhost:8080/api/v1/orders?term=LP-ELC
 ```
 
 Crear un cliente y un pedido:
 
 ```bash
-curl -s -X POST http://localhost:8080/api/v1/usuarios \
+curl -s -X POST http://localhost:8080/api/v1/customers \
   -H 'Content-Type: application/json' \
-  -d '{"nombre":"Paula","apellidoPaterno":"Ibarra","apellidoMaterno":"Nava","correoElectronico":"paula.ibarra@correo.com"}'
+  -d '{"firstName":"Paula","paternalLastName":"Ibarra","maternalLastName":"Nava","email":"paula.ibarra@correo.com"}'
 ```
 
-El cuerpo de un pedido nuevo pide `usuarioId`, `direccionEnvio`, `codigoProducto`, `descripcionProducto`, `cantidad`, `precio` y `canal` (`APLICACION` o `SITIO_WEB`). El estatus es opcional y arranca en `RECIBIDO`.
+El cuerpo de un pedido nuevo pide `customerId`, `shippingAddress`, `productCode`, `productDescription`, `quantity`, `unitPrice` y `channel` (`APP` o `WEBSITE`). El estatus es opcional y arranca en `RECEIVED`.
 
 ## Pruebas
 
@@ -154,7 +154,7 @@ cd frontend && npm run build
 
 ## Interfaz
 
-La mesa está en `/`. La ficha está en `/pedidos/{id}`. En pantallas angostas la tabla pasa a fichas y el formulario se apila. La frase que aparece cuando la búsqueda no coincide es:
+La mesa está en `/`. La ficha está en `/orders/{id}`. En pantallas angostas la tabla pasa a fichas y el formulario se apila. La frase que aparece cuando la búsqueda no coincide es:
 
 > No se tienen resultados que coincidan con los criterios de búsqueda.
 
@@ -175,8 +175,10 @@ El contrato exportado del servicio está en [docs/openapi.json](docs/openapi.jso
 
 ## Publicación
 
-No publicamos el servicio. En el plan gratuito el API queda en internet y MongoDB tiene que aceptar conexiones desde cualquier dirección. Sin inicio de sesión, cualquiera podría crear, cambiar y borrar pedidos. El arranque de arriba es el que vale.
+El escritorio público está en <https://liverpool.dvrd.io>. Solo se abren los puertos 80 y 443. MongoDB y el API quedan en la red de Docker, sin puerto en el anfitrión. La mesa no pide inicio de sesión: quien tiene la dirección puede crear y cambiar pedidos.
+
+Un push a `main` corre las pruebas y, si pasan, actualiza ese servidor. El flujo está en [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). En el anfitrión, [`deploy/aws/deploy.sh`](deploy/aws/deploy.sh) traduce las colecciones anteriores cuando todavía existen y vuelve a construir los contenedores. El servidor público no carga datos de ejemplo.
 
 ## Límites
 
-El servicio no autentica. Corre en la máquina local. La mesa habla con el API en el mismo origen.
+El servicio no autentica. En local, la mesa habla con el API en el mismo origen. En el servidor público, el API no se publica.

@@ -41,20 +41,20 @@ Cada cambio de estatus se agrega al historial embebido del pedido. Un solo docum
 
 ## Búsqueda
 
-Al guardar un pedido se construye `textoBusqueda`: folio, cliente, correo, dirección, código, descripción, canal y estatus, en minúsculas y sin acentos. El filtro y el typeahead consultan ese campo con un regex literal. Quien escribe `jose` encuentra a José, y un punto o un `+` en el término no se interpretan como operadores.
+Al guardar un pedido se construye `searchText`: folio, cliente, correo, dirección, código, descripción, canal y estatus, en minúsculas y sin acentos. El filtro y el typeahead consultan ese campo con un regex literal. Quien escribe `jose` encuentra a José, y un punto o un `+` en el término no se interpretan como operadores.
 
-`GET /api/v1/pedidos/sugerencias?termino=` devuelve hasta ocho opciones, sin repetir el mismo cliente, correo o código. Elegir una opción manda su valor como `termino` del listado.
+`GET /api/v1/orders/suggestions?term=` devuelve hasta ocho opciones, sin repetir el mismo cliente, correo o código. Elegir una opción manda su valor como `term` del listado.
 
 ## Capas
 
 | Capa | Responsabilidad |
 | --- | --- |
 | `web` | Contratos HTTP, validación de entrada, códigos de respuesta |
-| `servicio` | Reglas: correo único, copia del cliente, folio, historial, sugerencias |
-| `repositorio` | MongoRepository para altas y bajas; `PedidoBusqueda` para el filtro |
-| `dominio` | `Usuario`, `Pedido`, estatus y canal |
+| `service` | Reglas: correo único, copia del cliente, folio, historial, sugerencias |
+| `repository` | MongoRepository para altas y bajas; `OrderSearch` para el filtro |
+| `domain` | `Customer`, `Order`, estatus y canal |
 
-Los errores salen en un solo formato (`estatus`, `mensaje`, `detalles`, `ruta`) desde `ManejadorExcepciones`.
+Los errores salen en un solo formato (`status`, `error`, `message`, `details`, `path`) desde `ApiExceptionHandler`.
 
 ## API
 
@@ -65,13 +65,13 @@ Documentada con springdoc. Con el servicio en marcha:
 
 | Método | Ruta | Uso |
 | --- | --- | --- |
-| POST, GET | `/api/v1/usuarios` | Alta y listado de clientes |
-| GET, PUT, DELETE | `/api/v1/usuarios/{id}` | Consulta, reemplazo y baja |
-| POST, GET | `/api/v1/pedidos` | Alta y listado (`termino`, `estatus`, `pagina`, `tamano`) |
-| GET | `/api/v1/pedidos/sugerencias?termino=` | Typeahead, desde dos caracteres |
-| GET, PUT, DELETE | `/api/v1/pedidos/{id}` | Detalle, corrección y baja |
-| PATCH | `/api/v1/pedidos/{id}/estatus` | Cambio de estatus |
-| GET | `/api/v1/salud` | Servicio y ping a MongoDB |
+| POST, GET | `/api/v1/customers` | Alta y listado de clientes |
+| GET, PUT, DELETE | `/api/v1/customers/{id}` | Consulta, reemplazo y baja |
+| POST, GET | `/api/v1/orders` | Alta y listado (`term`, `status`, `page`, `size`) |
+| GET | `/api/v1/orders/suggestions?term=` | Typeahead, desde dos caracteres |
+| GET, PUT, DELETE | `/api/v1/orders/{id}` | Detalle, corrección y baja |
+| PATCH | `/api/v1/orders/{id}/status` | Cambio de estatus |
+| GET | `/api/v1/health` | Servicio y ping a MongoDB |
 
 No se elimina un cliente que todavía tiene pedidos: la API responde `409`.
 
@@ -80,11 +80,11 @@ No se elimina un cliente que todavía tiene pedidos: la API responde `409`.
 Dos pantallas.
 
 1. **Mesa** (`/`). Lista de pedidos, typeahead, filtro por estatus y altas de cliente y de pedido en la misma vista.
-2. **Ficha** (`/pedidos/{id}`). Los tres grupos del encargo —cliente, entrega y pedido—, el historial, el cambio de estatus, la corrección y la baja.
+2. **Ficha** (`/orders/{id}`). Los tres grupos del encargo —cliente, entrega y pedido—, el historial, el cambio de estatus, la corrección y la baja.
 
 En ancho estrecho la tabla se sustituye por fichas. Las acciones siguen en la página.
 
-La frase de vacío es una sola constante, `MENSAJE_SIN_RESULTADOS`, y la usan el typeahead y la lista:
+La frase de vacío es una sola constante, `EMPTY_SEARCH_MESSAGE`, y la usan el typeahead y la lista:
 
 > No se tienen resultados que coincidan con los criterios de búsqueda.
 

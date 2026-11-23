@@ -1,108 +1,129 @@
+import { errorFields, responseData } from "@/lib/httpBody";
+import { INVALID_RESPONSE_MESSAGE } from "@/lib/messages";
+import { ordersPath } from "@/lib/ordersPath";
 import type {
-  AltaPedido,
-  AltaUsuario,
-  CorreccionPedido,
-  EstatusPedido,
-  Pagina,
-  Pedido,
-  Sugerencia,
-  Usuario,
-} from "@/lib/tipos";
+  CreateCustomer,
+  CreateOrder,
+  Customer,
+  Order,
+  OrderStatus,
+  Page,
+  Suggestion,
+  UpdateOrder,
+} from "@/lib/types";
 
-export class ErrorApi extends Error {
-  estatus: number;
-  detalles?: Record<string, string>;
+export class ApiError extends Error {
+  status: number;
+  details?: Record<string, string>;
 
-  constructor(estatus: number, mensaje: string, detalles?: Record<string, string>) {
-    super(mensaje);
-    this.name = "ErrorApi";
-    this.estatus = estatus;
-    this.detalles = detalles;
+  constructor(status: number, message: string, details?: Record<string, string>) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.details = details;
   }
 }
 
-type Opciones = {
+type Options = {
   method?: string;
   body?: unknown;
   signal?: AbortSignal;
 };
 
-async function solicitar<T>(ruta: string, opciones: Opciones = {}): Promise<T> {
+async function request<T>(path: string, options: Options = {}): Promise<T> {
   const headers: Record<string, string> = { Accept: "application/json" };
-  if (opciones.body !== undefined) {
+  if (options.body !== undefined) {
     headers["Content-Type"] = "application/json";
   }
 
-  let respuesta: Response;
+  let response: Response;
   try {
-    respuesta = await fetch(ruta, {
-      method: opciones.method ?? "GET",
+    response = await fetch(path, {
+      method: options.method ?? "GET",
       headers,
-      body: opciones.body !== undefined ? JSON.stringify(opciones.body) : undefined,
-      signal: opciones.signal,
+      body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+      signal: options.signal,
       cache: "no-store",
     });
   } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") {
+    if (isAbort(error)) {
       throw error;
     }
-    throw new ErrorApi(0, "No hay conexión con el servicio de pedidos.");
+    throw new ApiError(0, "No hay conexión con el servicio de pedidos.");
   }
 
-  if (respuesta.status === 204) {
+  if (response.status === 204) {
     return undefined as T;
   }
 
-  const texto = await respuesta.text();
-  const cuerpo = texto ? (JSON.parse(texto) as { mensaje?: string; detalles?: Record<string, string> }) : null;
-
-  if (!respuesta.ok) {
-    throw new ErrorApi(
-      respuesta.status,
-      cuerpo?.mensaje ?? "No se pudo completar la operación.",
-      cuerpo?.detalles,
+  const text = await response.text();
+  const body = responseData(text);
+  if (text && body === undefined) {
+    throw new ApiError(
+      response.status,
+      response.ok ? INVALID_RESPONSE_MESSAGE : "No se pudo completar la operación.",
     );
   }
 
-  return cuerpo as T;
+  if (!response.ok) {
+    const error = errorFields(body);
+    throw new ApiError(
+      response.status,
+      error?.message ?? "No se pudo completar la operación.",
+      error?.details,
+    );
+  }
+
+  return body as T;
 }
 
-export function listarPedidos(filtro: { termino?: string; estatus?: string }, signal?: AbortSignal) {
-  const params = new URLSearchParams({ tamano: "50" });
-  if (filtro.termino) params.set("termino", filtro.termino);
-  if (filtro.estatus) params.set("estatus", filtro.estatus);
-  return solicitar<Pagina<Pedido>>(`/api/v1/pedidos?${params.toString()}`, { signal });
+export function isAbort(error: unknown): boolean {
+  return error instanceof DOMException && error.name === "AbortError";
 }
 
-export function sugerirPedidos(termino: string, signal?: AbortSignal) {
-  const params = new URLSearchParams({ termino });
-  return solicitar<Sugerencia[]>(`/api/v1/pedidos/sugerencias?${params.toString()}`, { signal });
+export function apiFailure(error: unknown, fallback: string): { message: string; details?: Record<string, string> } {
+  if (error instanceof ApiError) {
+    return { message: error.message, details: error.details };
+  }
+  return { message: fallback };
 }
 
-export function obtenerPedido(id: string, signal?: AbortSignal) {
-  return solicitar<Pedido>(`/api/v1/pedidos/${id}`, { signal });
+export function listOrders(
+  filter: { term?: string; status?: string; page?: number },
+  signal?: AbortSignal,
+) {
+  return request<Page<Order>>(ordersPath(filter), { signal });
 }
 
-export function crearPedido(alta: AltaPedido) {
-  return solicitar<Pedido>("/api/v1/pedidos", { method: "POST", body: alta });
+export function suggestOrders(term: string, signal?: AbortSignal) {
+  const params = new URLSearchParams({ term });
+  return request<Suggestion[]>(`/api/v1/orders/suggestions?${params.toString()}`, { signal });
 }
 
-export function actualizarPedido(id: string, correccion: CorreccionPedido) {
-  return solicitar<Pedido>(`/api/v1/pedidos/${id}`, { method: "PUT", body: correccion });
+export function getOrder(id: string, signal?: AbortSignal) {
+  return request<Order>(`/api/v1/orders/${id}`, { signal });
 }
 
-export function cambiarEstatus(id: string, estatus: EstatusPedido) {
-  return solicitar<Pedido>(`/api/v1/pedidos/${id}/estatus`, { method: "PATCH", body: { estatus } });
+export function createOrder(order: CreateOrder) {
+  return request<Order>("/api/v1/orders", { method: "POST", body: order });
 }
 
-export function eliminarPedido(id: string) {
-  return solicitar<void>(`/api/v1/pedidos/${id}`, { method: "DELETE" });
+export function updateOrder(id: string, correction: UpdateOrder) {
+  return request<Order>(`/api/v1/orders/${id}`, { method: "PUT", body: correction });
 }
 
-export function listarUsuarios() {
-  return solicitar<Usuario[]>("/api/v1/usuarios");
+export function changeStatus(id: string, status: OrderStatus) {
+  return request<Order>(`/api/v1/orders/${id}/status`, { method: "PATCH", body: { status } });
 }
 
-export function crearUsuario(alta: AltaUsuario) {
-  return solicitar<Usuario>("/api/v1/usuarios", { method: "POST", body: alta });
+export function deleteOrder(id: string) {
+  return request<void>(`/api/v1/orders/${id}`, { method: "DELETE" });
+}
+
+export function listCustomers() {
+  return request<Customer[]>("/api/v1/customers");
+}
+
+export function createCustomer(customer: CreateCustomer) {
+  return request<Customer>("/api/v1/customers", { method: "POST", body: customer });
 }

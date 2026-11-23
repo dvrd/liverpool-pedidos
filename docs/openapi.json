@@ -1,862 +1,868 @@
 {
-    "openapi": "3.0.1",
-    "info": {
-        "title": "Mesa de pedidos",
-        "description": "API REST para que el equipo de ventas gestione clientes y pedidos originados en la aplicaci\u00f3n y en el sitio web. El importe del pedido se calcula como precio unitario por cantidad. El pedido conserva una copia de los datos del cliente al momento de crearse.",
-        "version": "v1"
-    },
-    "servers": [
-        {
-            "url": "http://127.0.0.1:8080",
-            "description": "Generated server url"
-        }
-    ],
-    "tags": [
-        {
-            "name": "Salud",
-            "description": "Comprueba que el servicio y MongoDB responden"
-        },
-        {
-            "name": "Pedidos",
-            "description": "Pedidos originados en la aplicaci\u00f3n y en el sitio web"
-        },
-        {
-            "name": "Usuarios",
-            "description": "Clientes que realizan pedidos desde la aplicaci\u00f3n o el sitio web"
-        }
-    ],
-    "paths": {
-        "/api/v1/usuarios/{id}": {
-            "get": {
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Consulta un cliente",
-                "operationId": "obtener",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UsuarioRespuesta"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Actualiza los datos de un cliente",
-                "operationId": "actualizar",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ActualizarUsuarioSolicitud"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UsuarioRespuesta"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Elimina un cliente sin pedidos",
-                "operationId": "eliminar",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/api/v1/pedidos/{id}": {
-            "get": {
-                "tags": [
-                    "Pedidos"
-                ],
-                "summary": "Consulta el detalle de un pedido",
-                "operationId": "obtener_1",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PedidoRespuesta"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Pedidos"
-                ],
-                "summary": "Reemplaza los datos operativos de un pedido",
-                "operationId": "actualizar_1",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ActualizarPedidoSolicitud"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PedidoRespuesta"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Pedidos"
-                ],
-                "summary": "Elimina un pedido",
-                "operationId": "eliminar_1",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/api/v1/usuarios": {
-            "get": {
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Lista los clientes",
-                "operationId": "listar",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/UsuarioRespuesta"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Crea un cliente",
-                "operationId": "crear",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CrearUsuarioSolicitud"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UsuarioRespuesta"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/pedidos": {
-            "get": {
-                "tags": [
-                    "Pedidos"
-                ],
-                "summary": "Lista pedidos, con filtro por t\u00e9rmino y estatus",
-                "operationId": "listar_1",
-                "parameters": [
-                    {
-                        "name": "termino",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "estatus",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "pagina",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 0
-                        }
-                    },
-                    {
-                        "name": "tamano",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 20
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PaginaRespuestaPedidoRespuesta"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Pedidos"
-                ],
-                "summary": "Crea un pedido",
-                "operationId": "crear_1",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CrearPedidoSolicitud"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PedidoRespuesta"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/pedidos/{id}/estatus": {
-            "patch": {
-                "tags": [
-                    "Pedidos"
-                ],
-                "summary": "Cambia el estatus y lo agrega al historial",
-                "operationId": "cambiarEstatus",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CambiarEstatusSolicitud"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PedidoRespuesta"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/salud": {
-            "get": {
-                "tags": [
-                    "Salud"
-                ],
-                "summary": "Estado del servicio y de la base",
-                "operationId": "salud",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/pedidos/sugerencias": {
-            "get": {
-                "tags": [
-                    "Pedidos"
-                ],
-                "summary": "Opciones del typeahead a partir de dos caracteres",
-                "operationId": "sugerencias",
-                "parameters": [
-                    {
-                        "name": "termino",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/SugerenciaRespuesta"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "ActualizarUsuarioSolicitud": {
-                "required": [
-                    "apellidoMaterno",
-                    "apellidoPaterno",
-                    "correoElectronico",
-                    "nombre"
-                ],
-                "type": "object",
-                "properties": {
-                    "nombre": {
-                        "maxLength": 80,
-                        "minLength": 0,
-                        "type": "string"
-                    },
-                    "apellidoPaterno": {
-                        "maxLength": 80,
-                        "minLength": 0,
-                        "type": "string"
-                    },
-                    "apellidoMaterno": {
-                        "maxLength": 80,
-                        "minLength": 0,
-                        "type": "string"
-                    },
-                    "correoElectronico": {
-                        "maxLength": 160,
-                        "minLength": 0,
-                        "type": "string"
-                    }
-                },
-                "description": "Reemplazo de los datos de un cliente"
-            },
-            "UsuarioRespuesta": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "nombre": {
-                        "type": "string"
-                    },
-                    "apellidoPaterno": {
-                        "type": "string"
-                    },
-                    "apellidoMaterno": {
-                        "type": "string"
-                    },
-                    "nombreCompleto": {
-                        "type": "string"
-                    },
-                    "correoElectronico": {
-                        "type": "string"
-                    },
-                    "creadoEn": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "actualizadoEn": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "ActualizarPedidoSolicitud": {
-                "required": [
-                    "canal",
-                    "cantidad",
-                    "codigoProducto",
-                    "descripcionProducto",
-                    "direccionEnvio",
-                    "estatus",
-                    "precio"
-                ],
-                "type": "object",
-                "properties": {
-                    "direccionEnvio": {
-                        "maxLength": 240,
-                        "minLength": 0,
-                        "type": "string"
-                    },
-                    "codigoProducto": {
-                        "pattern": "^[A-Za-z0-9-]{4,32}$",
-                        "type": "string"
-                    },
-                    "descripcionProducto": {
-                        "maxLength": 140,
-                        "minLength": 0,
-                        "type": "string"
-                    },
-                    "cantidad": {
-                        "maximum": 99,
-                        "minimum": 1,
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "precio": {
-                        "minimum": 0.01,
-                        "exclusiveMinimum": false,
-                        "type": "number"
-                    },
-                    "canal": {
-                        "type": "string",
-                        "enum": [
-                            "APLICACION",
-                            "SITIO_WEB"
-                        ]
-                    },
-                    "estatus": {
-                        "type": "string",
-                        "enum": [
-                            "RECIBIDO",
-                            "CONFIRMADO",
-                            "EN_PREPARACION",
-                            "ENVIADO",
-                            "ENTREGADO",
-                            "CANCELADO"
-                        ]
-                    }
-                },
-                "description": "Reemplazo de los datos operativos del pedido. El cliente y el folio no cambian."
-            },
-            "ClienteRespuesta": {
-                "type": "object",
-                "properties": {
-                    "nombre": {
-                        "type": "string"
-                    },
-                    "apellidoPaterno": {
-                        "type": "string"
-                    },
-                    "apellidoMaterno": {
-                        "type": "string"
-                    },
-                    "nombreCompleto": {
-                        "type": "string"
-                    },
-                    "correoElectronico": {
-                        "type": "string"
-                    }
-                }
-            },
-            "EventoEstatusRespuesta": {
-                "type": "object",
-                "properties": {
-                    "estatus": {
-                        "type": "string",
-                        "enum": [
-                            "RECIBIDO",
-                            "CONFIRMADO",
-                            "EN_PREPARACION",
-                            "ENVIADO",
-                            "ENTREGADO",
-                            "CANCELADO"
-                        ]
-                    },
-                    "ocurridoEn": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "PedidoRespuesta": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "folio": {
-                        "type": "string"
-                    },
-                    "canal": {
-                        "type": "string",
-                        "enum": [
-                            "APLICACION",
-                            "SITIO_WEB"
-                        ]
-                    },
-                    "usuarioId": {
-                        "type": "string"
-                    },
-                    "cliente": {
-                        "$ref": "#/components/schemas/ClienteRespuesta"
-                    },
-                    "direccionEnvio": {
-                        "type": "string"
-                    },
-                    "codigoProducto": {
-                        "type": "string"
-                    },
-                    "descripcionProducto": {
-                        "type": "string"
-                    },
-                    "cantidad": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "precio": {
-                        "type": "number"
-                    },
-                    "importeTotal": {
-                        "type": "number"
-                    },
-                    "estatus": {
-                        "type": "string",
-                        "enum": [
-                            "RECIBIDO",
-                            "CONFIRMADO",
-                            "EN_PREPARACION",
-                            "ENVIADO",
-                            "ENTREGADO",
-                            "CANCELADO"
-                        ]
-                    },
-                    "historial": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/EventoEstatusRespuesta"
-                        }
-                    },
-                    "creadoEn": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "actualizadoEn": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "CrearUsuarioSolicitud": {
-                "required": [
-                    "apellidoMaterno",
-                    "apellidoPaterno",
-                    "correoElectronico",
-                    "nombre"
-                ],
-                "type": "object",
-                "properties": {
-                    "nombre": {
-                        "maxLength": 80,
-                        "minLength": 0,
-                        "type": "string",
-                        "example": "Mariana"
-                    },
-                    "apellidoPaterno": {
-                        "maxLength": 80,
-                        "minLength": 0,
-                        "type": "string",
-                        "example": "Castillo"
-                    },
-                    "apellidoMaterno": {
-                        "maxLength": 80,
-                        "minLength": 0,
-                        "type": "string",
-                        "example": "Reyes"
-                    },
-                    "correoElectronico": {
-                        "maxLength": 160,
-                        "minLength": 0,
-                        "type": "string",
-                        "example": "mariana.castillo@correo.com"
-                    }
-                },
-                "description": "Alta de un cliente"
-            },
-            "CrearPedidoSolicitud": {
-                "required": [
-                    "canal",
-                    "cantidad",
-                    "codigoProducto",
-                    "descripcionProducto",
-                    "direccionEnvio",
-                    "precio",
-                    "usuarioId"
-                ],
-                "type": "object",
-                "properties": {
-                    "usuarioId": {
-                        "type": "string",
-                        "description": "Identificador del usuario",
-                        "example": "665f1c2b8a0d1e2f3a4b5c6d"
-                    },
-                    "direccionEnvio": {
-                        "maxLength": 240,
-                        "minLength": 0,
-                        "type": "string",
-                        "example": "Av. Presidente Masaryk 111, Polanco, Miguel Hidalgo, CDMX, 11560"
-                    },
-                    "codigoProducto": {
-                        "pattern": "^[A-Za-z0-9-]{4,32}$",
-                        "type": "string",
-                        "example": "LP-MOD-10442"
-                    },
-                    "descripcionProducto": {
-                        "maxLength": 140,
-                        "minLength": 0,
-                        "type": "string",
-                        "example": "Vestido midi de lino"
-                    },
-                    "cantidad": {
-                        "maximum": 99,
-                        "minimum": 1,
-                        "type": "integer",
-                        "format": "int32",
-                        "example": 1
-                    },
-                    "precio": {
-                        "minimum": 0.01,
-                        "exclusiveMinimum": false,
-                        "type": "number",
-                        "description": "Precio unitario en MXN",
-                        "example": 1890.0
-                    },
-                    "canal": {
-                        "type": "string",
-                        "example": "SITIO_WEB",
-                        "enum": [
-                            "APLICACION",
-                            "SITIO_WEB",
-                            "APLICACION",
-                            "SITIO_WEB"
-                        ]
-                    },
-                    "estatus": {
-                        "type": "string",
-                        "description": "Si se omite, el pedido queda en RECIBIDO",
-                        "example": "RECIBIDO",
-                        "enum": [
-                            "RECIBIDO",
-                            "CONFIRMADO",
-                            "EN_PREPARACION",
-                            "ENVIADO",
-                            "ENTREGADO",
-                            "CANCELADO"
-                        ]
-                    }
-                },
-                "description": "Alta de un pedido asociado a un cliente existente"
-            },
-            "CambiarEstatusSolicitud": {
-                "required": [
-                    "estatus"
-                ],
-                "type": "object",
-                "properties": {
-                    "estatus": {
-                        "type": "string",
-                        "example": "ENVIADO",
-                        "enum": [
-                            "RECIBIDO",
-                            "CONFIRMADO",
-                            "EN_PREPARACION",
-                            "ENVIADO",
-                            "ENTREGADO",
-                            "CANCELADO"
-                        ]
-                    }
-                }
-            },
-            "PaginaRespuestaPedidoRespuesta": {
-                "type": "object",
-                "properties": {
-                    "contenido": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/PedidoRespuesta"
-                        }
-                    },
-                    "pagina": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "tamano": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "totalElementos": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "totalPaginas": {
-                        "type": "integer",
-                        "format": "int32"
-                    }
-                }
-            },
-            "SugerenciaRespuesta": {
-                "type": "object",
-                "properties": {
-                    "tipo": {
-                        "type": "string"
-                    },
-                    "etiqueta": {
-                        "type": "string"
-                    },
-                    "detalle": {
-                        "type": "string"
-                    },
-                    "valor": {
-                        "type": "string"
-                    }
-                },
-                "description": "Opci\u00f3n del typeahead. El valor es el t\u00e9rmino que filtra la lista al seleccionarse."
-            }
-        }
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Mesa de pedidos",
+    "description": "API REST para que el equipo de ventas gestione clientes y pedidos originados en la aplicación y en el sitio web. El importe del pedido se calcula como precio unitario por cantidad. El pedido conserva una copia de los datos del cliente al momento de crearse.",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080",
+      "description": "Generated server url"
     }
+  ],
+  "tags": [
+    {
+      "name": "Salud",
+      "description": "Comprueba que el servicio y MongoDB responden"
+    },
+    {
+      "name": "Pedidos",
+      "description": "Pedidos originados en la aplicación y en el sitio web"
+    },
+    {
+      "name": "Clientes",
+      "description": "Clientes que realizan pedidos desde la aplicación o el sitio web"
+    }
+  ],
+  "paths": {
+    "/api/v1/orders/{id}": {
+      "get": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Consulta el detalle de un pedido",
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Reemplaza los datos operativos de un pedido",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Elimina un pedido",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}": {
+      "get": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Consulta un cliente",
+        "operationId": "get_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerRecord"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Actualiza los datos de un cliente",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerRecord"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Elimina un cliente sin pedidos",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/orders": {
+      "get": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Lista pedidos, con filtro por término y estatus",
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "term",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponseOrderResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Crea un pedido",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers": {
+      "get": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Lista los clientes",
+        "operationId": "list_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Crea un cliente",
+        "operationId": "create_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerRecord"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{id}/status": {
+      "patch": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Cambia el estatus y lo agrega al historial",
+        "operationId": "changeStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/suggestions": {
+      "get": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Opciones del typeahead a partir de dos caracteres",
+        "operationId": "suggestions",
+        "parameters": [
+          {
+            "name": "term",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SuggestionResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "Salud"
+        ],
+        "summary": "Estado del servicio y de la base",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateOrderRequest": {
+        "required": [
+          "channel",
+          "productCode",
+          "productDescription",
+          "quantity",
+          "shippingAddress",
+          "status",
+          "unitPrice"
+        ],
+        "type": "object",
+        "properties": {
+          "shippingAddress": {
+            "maxLength": 240,
+            "minLength": 0,
+            "type": "string"
+          },
+          "productCode": {
+            "pattern": "^[A-Za-z0-9-]{4,32}$",
+            "type": "string"
+          },
+          "productDescription": {
+            "maxLength": 140,
+            "minLength": 0,
+            "type": "string"
+          },
+          "quantity": {
+            "maximum": 99,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitPrice": {
+            "minimum": 0.01,
+            "exclusiveMinimum": false,
+            "type": "number"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "APP",
+              "WEBSITE"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "RECEIVED",
+              "CONFIRMED",
+              "PREPARING",
+              "SHIPPED",
+              "DELIVERED",
+              "CANCELLED"
+            ]
+          }
+        },
+        "description": "Reemplazo de los datos operativos del pedido. El cliente y el folio no cambian."
+      },
+      "CustomerResponse": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "paternalLastName": {
+            "type": "string"
+          },
+          "maternalLastName": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "APP",
+              "WEBSITE"
+            ]
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/CustomerResponse"
+          },
+          "shippingAddress": {
+            "type": "string"
+          },
+          "productCode": {
+            "type": "string"
+          },
+          "productDescription": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "totalAmount": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "RECEIVED",
+              "CONFIRMED",
+              "PREPARING",
+              "SHIPPED",
+              "DELIVERED",
+              "CANCELLED"
+            ]
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatusEventResponse"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "StatusEventResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "RECEIVED",
+              "CONFIRMED",
+              "PREPARING",
+              "SHIPPED",
+              "DELIVERED",
+              "CANCELLED"
+            ]
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UpdateCustomerRequest": {
+        "required": [
+          "email",
+          "firstName",
+          "maternalLastName",
+          "paternalLastName"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string"
+          },
+          "paternalLastName": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string"
+          },
+          "maternalLastName": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string"
+          },
+          "email": {
+            "maxLength": 160,
+            "minLength": 0,
+            "type": "string"
+          }
+        },
+        "description": "Reemplazo de los datos de un cliente"
+      },
+      "CustomerRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "paternalLastName": {
+            "type": "string"
+          },
+          "maternalLastName": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateOrderRequest": {
+        "required": [
+          "channel",
+          "customerId",
+          "productCode",
+          "productDescription",
+          "quantity",
+          "shippingAddress",
+          "unitPrice"
+        ],
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "Identificador del cliente",
+            "example": "665f1c2b8a0d1e2f3a4b5c6d"
+          },
+          "shippingAddress": {
+            "maxLength": 240,
+            "minLength": 0,
+            "type": "string",
+            "example": "Av. Presidente Masaryk 111, Polanco, Miguel Hidalgo, CDMX, 11560"
+          },
+          "productCode": {
+            "pattern": "^[A-Za-z0-9-]{4,32}$",
+            "type": "string",
+            "example": "LP-MOD-10442"
+          },
+          "productDescription": {
+            "maxLength": 140,
+            "minLength": 0,
+            "type": "string",
+            "example": "Vestido midi de lino"
+          },
+          "quantity": {
+            "maximum": 99,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 1
+          },
+          "unitPrice": {
+            "minimum": 0.01,
+            "exclusiveMinimum": false,
+            "type": "number",
+            "description": "Precio unitario en MXN",
+            "example": 1890.0
+          },
+          "channel": {
+            "type": "string",
+            "example": "WEBSITE",
+            "enum": [
+              "APP",
+              "WEBSITE",
+              "APP",
+              "WEBSITE"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Si se omite, el pedido queda recibido.",
+            "example": "RECEIVED",
+            "enum": [
+              "RECEIVED",
+              "CONFIRMED",
+              "PREPARING",
+              "SHIPPED",
+              "DELIVERED",
+              "CANCELLED"
+            ]
+          }
+        },
+        "description": "Alta de un pedido asociado a un cliente existente"
+      },
+      "CreateCustomerRequest": {
+        "required": [
+          "email",
+          "firstName",
+          "maternalLastName",
+          "paternalLastName"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string",
+            "example": "Mariana"
+          },
+          "paternalLastName": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string",
+            "example": "Castillo"
+          },
+          "maternalLastName": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": "string",
+            "example": "Reyes"
+          },
+          "email": {
+            "maxLength": 160,
+            "minLength": 0,
+            "type": "string",
+            "example": "mariana.castillo@correo.com"
+          }
+        },
+        "description": "Alta de un cliente"
+      },
+      "ChangeStatusRequest": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "SHIPPED",
+            "enum": [
+              "RECEIVED",
+              "CONFIRMED",
+              "PREPARING",
+              "SHIPPED",
+              "DELIVERED",
+              "CANCELLED"
+            ]
+          }
+        }
+      },
+      "PageResponseOrderResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderResponse"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SuggestionResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ORDER_NUMBER",
+              "CUSTOMER",
+              "EMAIL",
+              "PRODUCT"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "description": "Opción del typeahead. El valor es el término que filtra la lista al seleccionarse."
+      }
+    }
+  }
 }

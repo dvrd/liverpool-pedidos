@@ -1,4 +1,4 @@
-import { Mastil } from "@/components/layout/Mastil";
+import { Masthead } from "@/components/layout/Masthead";
 import type { Metadata, Viewport } from "next";
 import { Figtree, Fraunces } from "next/font/google";
 import type { ReactNode } from "react";
@@ -27,15 +27,15 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#6e243c",
+  themeColor: "#E10098",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es" className={`${sans.variable} ${display.variable}`}>
       <body>
-        <a className="saltar" href="#contenido">Saltar al contenido</a>
-        <Mastil>{children}</Mastil>
+        <a className="skip" href="#content">Saltar al contenido</a>
+        <Masthead>{children}</Masthead>
       </body>
     </html>
   );

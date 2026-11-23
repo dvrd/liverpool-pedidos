@@ -12,10 +12,10 @@
     </parent>
 
     <groupId>mx.com.liverpool</groupId>
-    <artifactId>pedidos</artifactId>
+    <artifactId>orders</artifactId>
     <version>1.0.0</version>
-    <name>mesa-de-pedidos</name>
-    <description>API de gestión de pedidos para el equipo de ventas de Liverpool</description>
+    <name>order-desk</name>
+    <description>Order desk API for the Liverpool sales team</description>
 
     <properties>
         <java.version>11</java.version>
@@ -58,7 +58,7 @@
     </dependencies>
 
     <build>
-        <finalName>pedidos</finalName>
+        <finalName>orders</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

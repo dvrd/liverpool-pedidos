@@ -34,6 +34,7 @@ services:
     build: ./backend
     environment:
       MONGODB_URI: mongodb://liverpool:liverpool_pedidos@mongo:27017/liverpool_pedidos?authSource=admin
+      LIVERPOOL_SAMPLE_DATA: "false"
       JAVA_TOOL_OPTIONS: -Xmx384m -XX:+UseSerialGC -XX:MaxMetaspaceSize=128m -Xss512k -XX:+ExitOnOutOfMemoryError
     depends_on:
       mongo:
@@ -43,7 +44,7 @@ services:
   web:
     build: ./frontend
     environment:
-      API_INTERNA_URL: http://api:8080
+      INTERNAL_API_URL: http://api:8080
     depends_on:
       - api
     restart: unless-stopped

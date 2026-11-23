@@ -42,7 +42,7 @@ services:
   web:
     build: ./frontend
     environment:
-      API_INTERNA_URL: http://api:8080
+      INTERNAL_API_URL: http://api:8080
     ports:
       - "3000:3000"
     depends_on:
