@@ -4,6 +4,7 @@ import { Boton } from "@/components/ui/Boton";
 import { Bloque, Dato } from "@/components/ui/Bloque";
 import { Campo } from "@/components/ui/Campo";
 import { MarcaEstatus } from "@/components/ui/MarcaEstatus";
+import { Selector } from "@/components/ui/Selector";
 import { actualizarPedido, cambiarEstatus, eliminarPedido, ErrorApi, obtenerPedido } from "@/lib/api";
 import { aNumero, ETIQUETA_CANAL, ETIQUETA_ESTATUS, formatoFecha, formatoMoneda, ORDEN_ESTATUS } from "@/lib/formato";
 import type { CanalPedido, EstatusPedido, Pedido } from "@/lib/tipos";
@@ -111,16 +112,17 @@ export function VistaPedido() {
           <MarcaEstatus estatus={pedido.estatus} />
           <label className="campo" htmlFor="estatus">
             <span>Cambiar estatus</span>
-            <select
+            <Selector
               id="estatus"
-              data-testid="estatus"
-              value={estatus}
-              onChange={(event) => setEstatus(event.target.value as EstatusPedido)}
-            >
-              {ORDEN_ESTATUS.map((valor) => (
-                <option key={valor} value={valor}>{ETIQUETA_ESTATUS[valor]}</option>
-              ))}
-            </select>
+              testId="estatus"
+              valor={estatus}
+              onCambio={(siguiente) => setEstatus(siguiente as EstatusPedido)}
+              opciones={ORDEN_ESTATUS.map((item) => ({
+                valor: item,
+                etiqueta: ETIQUETA_ESTATUS[item],
+                estatus: item,
+              }))}
+            />
           </label>
           <Boton type="button" data-testid="guardar-estatus" disabled={estatus === pedido.estatus || guardandoEstatus} onClick={() => void guardarEstatus()}>
             {guardandoEstatus ? "Guardando…" : "Guardar estatus"}
@@ -274,11 +276,15 @@ function Correccion({
           <input id="precio-edicion" inputMode="decimal" value={precio} onChange={(event) => setPrecio(event.target.value)} />
         </Campo>
         <Campo id="canal-edicion" etiqueta="Canal">
-          <select id="canal-edicion" value={canal} onChange={(event) => setCanal(event.target.value as CanalPedido)}>
-            {(Object.keys(ETIQUETA_CANAL) as CanalPedido[]).map((valor) => (
-              <option key={valor} value={valor}>{ETIQUETA_CANAL[valor]}</option>
-            ))}
-          </select>
+          <Selector
+            id="canal-edicion"
+            valor={canal}
+            onCambio={(siguiente) => setCanal(siguiente as CanalPedido)}
+            opciones={(Object.keys(ETIQUETA_CANAL) as CanalPedido[]).map((item) => ({
+              valor: item,
+              etiqueta: ETIQUETA_CANAL[item],
+            }))}
+          />
         </Campo>
       </div>
       <Boton type="submit" disabled={enviando}>{enviando ? "Guardando…" : "Guardar corrección"}</Boton>

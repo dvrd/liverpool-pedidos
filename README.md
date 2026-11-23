@@ -173,6 +173,24 @@ El relato, desde el problema hasta las dos pantallas, está en [docs/recorrido.h
 
 El contrato exportado del servicio está en [docs/openapi.json](docs/openapi.json). En marcha también se consulta en `/v3/api-docs` y en Swagger UI.
 
+## Publicación en Render
+
+El plan gratuito no guarda disco, no ofrece MongoDB y no puede recibir tráfico en la red privada. La publicación sin costo son dos servicios web (`plan: free` en `render.yaml`) y un clúster MongoDB Atlas M0. La mesa llama al API por su URL pública de `onrender.com`.
+
+Esos servicios se duermen tras 15 minutos sin visitas. La primera petición puede tardar cerca de un minuto por servicio. No hay inicio de sesión: quien tenga la URL del API puede crear, ver y borrar pedidos. Los datos de prueba son ficticios. No subas datos reales.
+
+1. En [MongoDB Atlas](https://www.mongodb.com/atlas) crea un clúster M0 en AWS `us-west-2` (Oregon, la misma región que Render). Crea un usuario de base de datos. En Network Access permite `0.0.0.0/0`: las instancias gratuitas de Render no tienen una IP de salida fija.
+2. Copia la cadena de conexión con el nombre de la base en la ruta:
+
+```text
+mongodb+srv://USUARIO:CONTRASEÑA@CLUSTER.mongodb.net/liverpool_pedidos?retryWrites=true&w=majority
+```
+
+3. Abre el blueprint <https://render.com/deploy?repo=https://github.com/dvrd/liverpool-pedidos>, entra con una cuenta gratuita y pega esa cadena en `MONGODB_URI`. El archivo ya pide el plan Free; no elijas un plan de pago.
+4. Al terminar, la mesa es la URL `onrender.com` del servicio `liverpool-pedidos-mesa`. Si `usuarios` está vacía, el primer arranque carga los 14 pedidos de prueba.
+
+Si la mesa responde que el servicio no está disponible, copia la URL pública del servicio `liverpool-pedidos-api` en la variable `API_INTERNA_URL` de la mesa y vuelve a desplegar.
+
 ## Límites
 
-El servicio no autentica. Está pensado para correr en local o en una red de prueba. No lo publiques a internet sin una capa de acceso: los clientes y las direcciones quedan abiertos.
+El servicio no autentica. En local la mesa habla con el API en la misma máquina. En Render el API queda público por el límite del plan gratuito: nombres, correos y direcciones de prueba quedan al alcance de quien tenga la URL.

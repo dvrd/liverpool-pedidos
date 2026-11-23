@@ -1,0 +1,34 @@
+# Plan free en ambos servicios. Si se omite, Render crea un servicio de pago.
+# El plan gratuito no recibe tráfico privado ni ofrece MongoDB: la mesa llama
+# al API por su URL pública y la base vive en MongoDB Atlas (MONGODB_URI).
+services:
+  - type: web
+    name: liverpool-pedidos-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/v1/salud
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JAVA_TOOL_OPTIONS
+        value: -XX:MaxRAMPercentage=50.0 -XX:InitialRAMPercentage=25.0 -XX:+UseSerialGC -XX:MaxMetaspaceSize=128m -Xss512k -XX:+ExitOnOutOfMemoryError
+
+  - type: web
+    name: liverpool-pedidos-mesa
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    healthCheckPath: /
+    envVars:
+      - key: HOSTNAME
+        value: 0.0.0.0
+      - key: API_INTERNA_URL
+        fromService:
+          name: liverpool-pedidos-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL

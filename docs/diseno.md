@@ -90,4 +90,4 @@ La frase de vacío es una sola constante, `MENSAJE_SIN_RESULTADOS`, y la usan el
 
 ## Qué quedó fuera
 
-No hay autenticación. Sirve para la evaluación en local. No debe publicarse en internet tal como está: expone datos de clientes.
+No hay autenticación. En local la mesa habla con el API por el proxy de Next. La publicación gratuita en Render deja el API en una URL pública y la base en MongoDB Atlas, con los datos de prueba. El arranque está en el README.

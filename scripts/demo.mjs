@@ -106,7 +106,8 @@ try {
   await tiro("12-creado.png");
   await page.locator("a.estirado", { hasText: folio }).click();
   await page.getByTestId("detalle-folio").waitFor();
-  await page.getByTestId("estatus").selectOption("CONFIRMADO");
+  await page.getByTestId("estatus").click();
+  await page.getByRole("option", { name: "Confirmado" }).click();
   await page.getByTestId("guardar-estatus").click();
   await page.getByText("Estatus actualizado.").waitFor();
   await page.getByText("Confirmado").first().waitFor();

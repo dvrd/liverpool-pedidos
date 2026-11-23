@@ -2,6 +2,7 @@
 
 import { Boton } from "@/components/ui/Boton";
 import { Campo } from "@/components/ui/Campo";
+import { Selector } from "@/components/ui/Selector";
 import { crearPedido, crearUsuario, ErrorApi } from "@/lib/api";
 import { aNumero, ETIQUETA_CANAL, ETIQUETA_ESTATUS, ORDEN_ESTATUS } from "@/lib/formato";
 import type { CanalPedido, EstatusPedido, Usuario } from "@/lib/tipos";
@@ -143,13 +144,17 @@ export function AltaPedido({
       {usuarios.length === 0 ? <p className="popover-nota">Primero registra un cliente.</p> : null}
       <div className="alta-grid">
         <Campo id="usuarioId" etiqueta="Cliente" error={errores.usuarioId} className="campo-ancho">
-          <select id="usuarioId" value={usuarioId} onChange={(event) => setUsuarioId(event.target.value)}>
-            {usuarios.map((usuario) => (
-              <option key={usuario.id} value={usuario.id}>
-                {usuario.nombreCompleto} · {usuario.correoElectronico}
-              </option>
-            ))}
-          </select>
+          <Selector
+            id="usuarioId"
+            valor={usuarioId}
+            deshabilitado={usuarios.length === 0}
+            onCambio={setUsuarioId}
+            opciones={usuarios.map((usuario) => ({
+              valor: usuario.id,
+              etiqueta: usuario.nombreCompleto,
+              detalle: usuario.correoElectronico,
+            }))}
+          />
         </Campo>
         <Campo id="direccion" etiqueta="Dirección de envío" error={errores.direccionEnvio} className="campo-ancho">
           <textarea id="direccion" rows={2} value={direccion} onChange={(event) => setDireccion(event.target.value)} aria-invalid={Boolean(errores.direccionEnvio)} aria-describedby={errores.direccionEnvio ? "direccion-error" : undefined} />
@@ -167,18 +172,27 @@ export function AltaPedido({
           <input id="precio" inputMode="decimal" value={precio} onChange={(event) => setPrecio(event.target.value)} aria-invalid={Boolean(errores.precio)} aria-describedby={errores.precio ? "precio-error" : undefined} />
         </Campo>
         <Campo id="canal" etiqueta="Canal">
-          <select id="canal" value={canal} onChange={(event) => setCanal(event.target.value as CanalPedido)}>
-            {(Object.keys(ETIQUETA_CANAL) as CanalPedido[]).map((valor) => (
-              <option key={valor} value={valor}>{ETIQUETA_CANAL[valor]}</option>
-            ))}
-          </select>
+          <Selector
+            id="canal"
+            valor={canal}
+            onCambio={(siguiente) => setCanal(siguiente as CanalPedido)}
+            opciones={(Object.keys(ETIQUETA_CANAL) as CanalPedido[]).map((item) => ({
+              valor: item,
+              etiqueta: ETIQUETA_CANAL[item],
+            }))}
+          />
         </Campo>
         <Campo id="estatus-alta" etiqueta="Estatus">
-          <select id="estatus-alta" value={estatus} onChange={(event) => setEstatus(event.target.value as EstatusPedido)}>
-            {ORDEN_ESTATUS.map((valor) => (
-              <option key={valor} value={valor}>{ETIQUETA_ESTATUS[valor]}</option>
-            ))}
-          </select>
+          <Selector
+            id="estatus-alta"
+            valor={estatus}
+            onCambio={(siguiente) => setEstatus(siguiente as EstatusPedido)}
+            opciones={ORDEN_ESTATUS.map((item) => ({
+              valor: item,
+              etiqueta: ETIQUETA_ESTATUS[item],
+              estatus: item,
+            }))}
+          />
         </Campo>
       </div>
       {falla ? <p className="falla" role="alert">{falla}</p> : null}
