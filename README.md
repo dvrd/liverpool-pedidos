@@ -10,8 +10,6 @@ Repositorio: <https://github.com/dvrd/liverpool-pedidos>
 - Mesa en Next.js: lista con typeahead y ficha del pedido.
 - Contrato publicado con springdoc (Swagger UI y OpenAPI).
 
-El diseño de las capas, el folio y la búsqueda está en [docs/design.md](docs/design.md).
-
 ## Requisitos
 
 - Java 11 o superior y Maven 3.8 o superior.
@@ -79,8 +77,6 @@ npm run dev
 
 Abre <http://localhost:3000>. El typeahead y la lista pasan por el mismo origen: Next reenvía `/api` a `http://127.0.0.1:8080`. Para apuntar a otro servicio, define `INTERNAL_API_URL`.
 
-En macOS, `scripts/start-local.sh` hace los tres pasos si el binario está en `.tools/mongodb` o si el puerto 27017 ya está ocupado por MongoDB. `scripts/stop-local.sh` los baja.
-
 ## Datos de prueba
 
 Se insertan solo cuando la colección `customers` está vacía. Para repetir la carga, vacía la base y reinicia el API.
@@ -128,7 +124,7 @@ Para probar el typeahead: `jose` encuentra a José Luis aunque se escriba sin ac
 
 ## API
 
-La referencia navegable es Swagger UI en `/swagger-ui.html`. El JSON OpenAPI está en `/v3/api-docs`. Hay una colección corta en [docs/examples.http](docs/examples.http).
+La referencia navegable es Swagger UI en `/swagger-ui.html`. El JSON OpenAPI está en `/v3/api-docs` y, exportado, en [docs/openapi.json](docs/openapi.json).
 
 ```bash
 curl -s http://localhost:8080/api/v1/orders/suggestions?term=jose
@@ -152,8 +148,6 @@ cd backend && mvn test
 cd frontend && npm test && npm run build
 ```
 
-La capacidad de lectura se mide en local, contra el API de esta máquina, con `k6 run loadtest/desk.js`. No apunta al escritorio público.
-
 ## Interfaz
 
 La mesa está en `/`. La ficha está en `/orders/{id}`. En pantallas angostas la tabla pasa a fichas y el formulario se apila. La frase que aparece cuando la búsqueda no coincide es:
@@ -162,7 +156,7 @@ La mesa está en `/`. La ficha está en `/orders/{id}`. En pantallas angostas la
 
 ## Evidencias
 
-El relato, desde el problema hasta las dos pantallas, está en [docs/walkthrough.html](docs/walkthrough.html). El video y las capturas de ese mismo flujo están en [docs/evidence](docs/evidence):
+El video y las capturas están en [docs/evidence](docs/evidence).
 
 | Archivo | Qué muestra |
 | --- | --- |
