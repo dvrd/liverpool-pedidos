@@ -1,0 +1,12 @@
+{
+	auto_https off
+}
+
+http://liverpool.dvrd.io {
+	reverse_proxy web:3000
+}
+
+https://liverpool.dvrd.io {
+	tls internal
+	reverse_proxy web:3000
+}

@@ -44,10 +44,19 @@ services:
     build: ./frontend
     environment:
       API_INTERNA_URL: http://api:8080
-    ports:
-      - "80:3000"
     depends_on:
       - api
+    restart: unless-stopped
+
+  entrada:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/aws/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - web
     restart: unless-stopped
 
 volumes:
