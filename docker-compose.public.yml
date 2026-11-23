@@ -1,0 +1,54 @@
+# Solo el escritorio publica un puerto. MongoDB y el API quedan en la red
+# interna de Docker, sin dirección en el anfitrión.
+services:
+  mongo:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: liverpool
+      MONGO_INITDB_ROOT_PASSWORD: liverpool_pedidos
+      MONGO_INITDB_DATABASE: liverpool_pedidos
+    volumes:
+      - liverpool_mongo:/data/db
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--username",
+          "liverpool",
+          "--password",
+          "liverpool_pedidos",
+          "--authenticationDatabase",
+          "admin",
+          "--quiet",
+          "--eval",
+          "db.adminCommand('ping')",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+
+  api:
+    build: ./backend
+    environment:
+      MONGODB_URI: mongodb://liverpool:liverpool_pedidos@mongo:27017/liverpool_pedidos?authSource=admin
+      JAVA_TOOL_OPTIONS: -Xmx384m -XX:+UseSerialGC -XX:MaxMetaspaceSize=128m -Xss512k -XX:+ExitOnOutOfMemoryError
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build: ./frontend
+    environment:
+      API_INTERNA_URL: http://api:8080
+    ports:
+      - "80:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  liverpool_mongo:
