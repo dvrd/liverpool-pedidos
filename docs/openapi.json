@@ -468,30 +468,37 @@
           "shippingAddress": {
             "maxLength": 240,
             "minLength": 0,
-            "type": "string"
+            "type": "string",
+            "example": "Av. Presidente Masaryk 111, Polanco, Miguel Hidalgo, CDMX, 11560"
           },
           "productCode": {
             "pattern": "^[A-Za-z0-9-]{4,32}$",
-            "type": "string"
+            "type": "string",
+            "example": "LP-MOD-10442"
           },
           "productDescription": {
             "maxLength": 140,
             "minLength": 0,
-            "type": "string"
+            "type": "string",
+            "example": "Vestido midi de lino"
           },
           "quantity": {
             "maximum": 99,
             "minimum": 1,
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "example": 1
           },
           "unitPrice": {
             "minimum": 0.01,
             "exclusiveMinimum": false,
-            "type": "number"
+            "type": "number",
+            "description": "Precio unitario en MXN",
+            "example": 1890.0
           },
           "channel": {
             "type": "string",
+            "example": "WEBSITE",
             "enum": [
               "APP",
               "WEBSITE"
@@ -499,6 +506,7 @@
           },
           "status": {
             "type": "string",
+            "example": "SHIPPED",
             "enum": [
               "RECEIVED",
               "CONFIRMED",
@@ -631,22 +639,26 @@
           "firstName": {
             "maxLength": 80,
             "minLength": 0,
-            "type": "string"
+            "type": "string",
+            "example": "Mariana"
           },
           "paternalLastName": {
             "maxLength": 80,
             "minLength": 0,
-            "type": "string"
+            "type": "string",
+            "example": "Castillo"
           },
           "maternalLastName": {
             "maxLength": 80,
             "minLength": 0,
-            "type": "string"
+            "type": "string",
+            "example": "Reyes"
           },
           "email": {
             "maxLength": 160,
             "minLength": 0,
-            "type": "string"
+            "type": "string",
+            "example": "mariana.castillo@correo.com"
           }
         },
         "description": "Reemplazo de los datos de un cliente"
@@ -694,11 +706,6 @@
         ],
         "type": "object",
         "properties": {
-          "customerId": {
-            "type": "string",
-            "description": "Identificador del cliente",
-            "example": "665f1c2b8a0d1e2f3a4b5c6d"
-          },
           "shippingAddress": {
             "maxLength": 240,
             "minLength": 0,
@@ -735,10 +742,13 @@
             "example": "WEBSITE",
             "enum": [
               "APP",
-              "WEBSITE",
-              "APP",
               "WEBSITE"
             ]
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Identificador del cliente",
+            "example": "665f1c2b8a0d1e2f3a4b5c6d"
           },
           "status": {
             "type": "string",

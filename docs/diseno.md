@@ -23,19 +23,19 @@ flowchart LR
   Api --> Db
 ```
 
-La mesa es la interfaz del equipo de ventas. La aplicación y el sitio web no se reimplementan: el pedido guarda el canal de origen (`APLICACION` o `SITIO_WEB`).
+La mesa es la interfaz del equipo de ventas. La aplicación y el sitio web no se reimplementan: el pedido guarda el canal de origen (`APP` o `WEBSITE`). En la mesa se leen como «Aplicación» y «Sitio web».
 
 La interfaz habla con `/api` en su mismo origen. Next.js reenvía esa ruta al servicio Java, así el navegador no depende de CORS.
 
 ## Modelo
 
-Un **usuario** es el cliente: nombre, apellido paterno, apellido materno y correo único.
+Un **cliente** vive en la colección `customers`: nombre, apellido paterno, apellido materno y correo único.
 
 Un **pedido** referencia al cliente y, además, guarda una copia de sus datos en el momento de la compra. Si después se corrige el directorio, los pedidos ya hechos no cambian. También guarda dirección de envío, código y descripción del producto, cantidad, precio unitario, canal y estatus.
 
 El importe no se almacena. La respuesta lo calcula como precio unitario por cantidad, con dos decimales.
 
-El folio (`LIV-000001`) sale de un contador atómico (`findAndModify` sobre la colección `secuencias`). Así dos altas simultáneas no reciben el mismo folio y no hace falta un replica set.
+El folio (`LIV-000001`) sale de un contador atómico (`findAndModify` sobre la colección `sequences`, documento `_id` `order`, campo `value`). Así dos altas simultáneas no reciben el mismo folio y no hace falta un replica set.
 
 Cada cambio de estatus se agrega al historial embebido del pedido. Un solo documento basta: la actualización de un pedido es atómica en MongoDB.
 
@@ -90,4 +90,4 @@ La frase de vacío es una sola constante, `EMPTY_SEARCH_MESSAGE`, y la usan el t
 
 ## Qué quedó fuera
 
-No hay autenticación. Sirve para la evaluación en local. No se publica: un API abierto dejaría los pedidos al alcance de cualquiera.
+No hay autenticación. La mesa pública está en <https://liverpool.dvrd.io>. MongoDB y el puerto del API no se publican; la mesa reenvía `/api` en su mismo origen, así que quien tiene la dirección puede crear y cambiar pedidos. Corregir o eliminar un cliente se hace por el API. La mesa solo da de alta clientes y gestiona el pedido completo.

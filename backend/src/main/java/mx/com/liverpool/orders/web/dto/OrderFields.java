@@ -47,6 +47,6 @@ public abstract class OrderFields {
     private BigDecimal unitPrice;
 
     @NotNull(message = "El canal es obligatorio")
-    @Schema(example = "WEBSITE", allowableValues = {"APP", "WEBSITE"})
+    @Schema(example = "WEBSITE")
     private OrderChannel channel;
 }

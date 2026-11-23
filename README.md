@@ -49,7 +49,7 @@ docker compose up --build
 
 - Mesa: <http://localhost:3000>
 - Swagger: <http://localhost:8080/swagger-ui.html>
-- Salud: <http://localhost:8080/api/v1/salud>
+- Salud: <http://localhost:8080/api/v1/health>
 
 La primera vez el API carga los datos de prueba.
 
@@ -149,8 +149,10 @@ El cuerpo de un pedido nuevo pide `customerId`, `shippingAddress`, `productCode`
 
 ```bash
 cd backend && mvn test
-cd frontend && npm run build
+cd frontend && npm test && npm run build
 ```
+
+La capacidad de lectura se mide en local, contra el API de esta máquina, con `k6 run loadtest/desk.js`. No apunta al escritorio público.
 
 ## Interfaz
 
@@ -181,4 +183,4 @@ Un push a `main` corre las pruebas y, si pasan, actualiza ese servidor. El flujo
 
 ## Límites
 
-El servicio no autentica. En local, la mesa habla con el API en el mismo origen. En el servidor público, el API no se publica.
+El servicio no autentica. La mesa, en local y en el servidor público, habla con el API por el mismo origen. Los puertos de MongoDB y del API no se abren en el anfitrión.
